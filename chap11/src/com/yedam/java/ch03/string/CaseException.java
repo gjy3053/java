@@ -14,6 +14,14 @@ public class CaseException {
 			System.out.println("없는 데이터입니다.");
 		}
 		
+		
+		//대소문자 구분없이 의미만 비교하는 메소드
+		if(inputData.equalsIgnoreCase(DATA)) {
+			System.out.println("있는 데이터입니다.");
+		}else {
+			System.out.println("없는 데이터입니다.");
+		}
+		
 
 	}
 
