@@ -22,7 +22,7 @@ public class Member {
 	public boolean equals(Object obj) {
 		if(obj instanceof Member) {
 			Member member = (Member)obj;
-			return (id==member.id) && (name.equals(member.name));  //id가뭐야?
+			return (id==member.id) && (name.equals(member.name)); 
 		}
 		return false;
 	}
