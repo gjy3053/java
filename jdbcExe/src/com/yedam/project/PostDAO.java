@@ -76,6 +76,32 @@ public class PostDAO {
 		return list;
 	}
 	
+	//인기글 조회
+	public List<PostVO> postVoGoodList() {
+		connect();
+		sql = "select * from post order by post_good desc";
+		List<PostVO> list = new ArrayList<>();
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				PostVO post = new PostVO();
+				post.setPostNum(rs.getInt("post_num"));
+				post.setPostId(rs.getString("post_id"));
+				post.setPostTitle(rs.getString("post_title"));
+				post.setPostDate(rs.getString("post_date"));
+				post.setPostGood(rs.getInt("post_good"));
+
+				list.add(post);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return list;
+	}
+	
 	// 단건조회 
 	public PostVO getPost(int postNum) {
 		sql = "select * from post where post_num = '" + postNum + "'"; // 기본키조회니까 많아봐야 한건
@@ -111,7 +137,6 @@ public class PostDAO {
 		int r = 0;
 		try {
 			psmt = conn.prepareStatement(sql);
-			// psmt.setInt(1,post.getPostNum());
 			psmt.setString(1, post.getPostId());
 			psmt.setString(2, post.getPostTitle());
 			psmt.setString(3, post.getPostContents());
@@ -157,5 +182,22 @@ public class PostDAO {
 		}
 		return r;
 	}
+	
+	//추천수 변경
+	public int goodPost(int num, PostVO post) {
+		connect();
+		sql = "update post set post_good = ? where post_num = " + num;
+		int r = 0;
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, post.getPostGood()+1);
+			r = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return r;
+		
+	}
+	
 
 }

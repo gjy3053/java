@@ -78,24 +78,17 @@ public class MainMethod {
 			System.out.println("조회된 정보 없음");
 	}
 
-	// 단건조회
-	public void search() {
-		System.out.println("조회할 게시판 번호 입력>");
-		int num = Integer.parseInt(sc.nextLine());
 
-		PostVO post = pDao.getPost(num);
-		if (post == null) {
-			System.out.println("조회된 정보가 없습니다");
-		} else {
-			System.out.println("⋇⋆✦⋆⋇　 " + num + "번 게시글 입니다　 ⋇⋆✦⋆⋇");
-			System.out.println("제목 : " + post.getPostTitle());
-			System.out.println("작성자 : " + post.getPostId());
-			System.out.println("내용 : " + post.getPostContents());
-			System.out.println("추천수 : " + post.getPostGood());
-			System.out.println();
+//인기글 조회
+	public void goodList() {
+		List<PostVO> list = pDao.postVoGoodList();
+		for (PostVO post : list) {
+			System.out.println(post.toString());
 		}
+		if (list == null)
+			System.out.println("조회된 정보 없음");
 	}
-
+	
 	// 게시글 입력
 	public void add() {
 		System.out.println("♥　♡　♥　♡　♥　♡　♥ 게시글 작성 페이지 ♥　♡　♥　♡　♥　♡　♥");
@@ -189,7 +182,7 @@ public class MainMethod {
 		System.out.println("비밀번호입력>");
 		String pw = sc.nextLine();
 		CustomerVO customer = cDao.getCustomer(id);
-		if (customer == null) {
+		if (customer == null || !customer.getCustomerPw().equals(pw) ) {
 			System.out.println("로그인 실패");
 		} else if (customer.getCustomerPw().equals(pw)) {
 			System.out.println("♬♩♪♩　　" + id + "님 안녕하세요　　♩♪♩♬");
@@ -197,6 +190,32 @@ public class MainMethod {
 
 		}
 
+	}
+	// 단건조회
+	public void search() {
+		System.out.println("조회할 게시판 번호 입력>");
+		int num = Integer.parseInt(sc.nextLine());
+
+		PostVO post = pDao.getPost(num);
+		if (post == null) {
+			System.out.println("조회된 정보가 없습니다");
+		} else {
+			System.out.println("⋇⋆✦⋆⋇　 " + num + "번 게시글 입니다　 ⋇⋆✦⋆⋇");
+			System.out.println("제목 : " + post.getPostTitle());
+			System.out.println("작성자 : " + post.getPostId());
+			System.out.println("내용 : " + post.getPostContents());
+			System.out.println("추천수 : " + post.getPostGood());
+			System.out.println();
+			
+			System.out.println("이글을 추천하시겠습니까?");
+			System.out.println("1.추천 | 2. 나가기");
+			int good = Integer.parseInt(sc.nextLine());
+			if(good==1) {
+				pDao.goodPost(num, post);
+				System.out.println("∞ ₒ ˚ ° 𐐒𐐚 ° ˚ ₒ ∞ 추천완료 ∞ ₒ ˚ ° 𐐒𐐚 ° ˚ ₒ ∞");
+			}
+			
+		}
 	}
 
 	// 로그인 후 페이지 이동
@@ -218,7 +237,7 @@ public class MainMethod {
 			} else if (menu_2 == 5) {
 				remove();
 			} else if (menu_2 == 6) {
-
+				goodList();
 			} else if (menu_2 == 99) {
 				System.out.println("로그아웃 되었습니다.");
 				break;
