@@ -25,6 +25,21 @@ public class CustomerDAO {
 	ResultSet rs = null;
 	String sql;
 
+	public void disconn() {
+		try {
+			if (conn != null)
+				conn.close();
+			if (stmt != null)
+				stmt.close();
+			if (psmt != null)
+				psmt.close();
+			if (rs != null)
+				rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void connect() {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -38,19 +53,22 @@ public class CustomerDAO {
 	// 입력
 	public int addCustomer(CustomerVO customer) {
 		connect();
-		sql = "insert into customer(customer_id, customer_pw, customer_addr) " + "values(?, ?, ?)"; // 문자열
-																									// ?로
-																									// 대체
+		sql = "insert into customer(customer_id, customer_pw, customer_addr) " + "values(?, ?, ?)"; 
+																									
+																									
 		int r = 0;
 		try {
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, customer.getCustomerId());
 			psmt.setString(2, customer.getCustomerPw());
 			psmt.setString(3, customer.getCustomerAddr());
-			r = psmt.executeUpdate(); // 처리된 건수.
+			r = psmt.executeUpdate(); 
 
 		} catch (SQLException e) {
 			//e.printStackTrace();
+		}
+		finally {
+			disconn();
 		}
 		return r;
 
@@ -74,7 +92,10 @@ public class CustomerDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null; // 조회된 데이터가 없음.
+		finally {
+			disconn();
+		}
+		return null; 
 	}
 
 
